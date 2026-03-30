@@ -1,182 +1,23 @@
-index.html          (Homepage)
-login.html          (Login/Register)
-dashboard.html      (User dashboard)
-admin.html          (God admin panel)
-products.html       (Product marketplace)
-product.html        (Single product page)        }
-        
-        .field .name {
-            color: #667eea;
-            font-weight: bold;
-        }
-        
-        .field .type {
-            color: #764ba2;
-        }
-        
-        .enum-section {
-            background: #fff3cd;
-            border-left: 5px solid #ffc107;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-        
-        .enum-section h3 {
-            color: #856404;
-            margin-bottom: 15px;
-        }
-        
-        .enum-values {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .enum-value {
-            background: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: 1px solid #ffc107;
-            font-family: 'Courier New', monospace;
-            font-weight: 500;
-        }
-        
-        .description {
-            color: #666;
-            font-size: 0.95em;
-            margin-bottom: 15px;
-            font-style: italic;
-        }
-        
-        footer {
-            background: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-            color: #666;
-            border-top: 1px solid #ddd;
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .feature-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .feature-card h4 {
-            margin-bottom: 10px;
-        }
-    </style>
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Affiliate Platform</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 50px; }
+    button { padding: 10px 20px; margin: 10px; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>CBF Affiliate Platform</h1>
-            <p>Database Schema & System Architecture</p>
-        </header>
-        
-        <div class="content">
-            <div class="features">
-                <div class="feature-card">
-                    <h4>🔐 User Management</h4>
-                    <p>Multi-role system with affiliates, vendors & admins</p>
-                </div>
-                <div class="feature-card">
-                    <h4>🛍️ Product Management</h4>
-                    <p>Vendor products with commission tracking</p>
-                </div>
-                <div class="feature-card">
-                    <h4>💰 Commission System</h4>
-                    <p>Automatic commission calculation & tracking</p>
-                </div>
-                <div class="feature-card">
-                    <h4>🔗 Referral System</h4>
-                    <p>Advanced referral tracking & management</p>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2>📊 Core Models</h2>
-                
-                <div class="model">
-                    <h3>User Model</h3>
-                    <p class="description">Represents all system users including administrators, vendors, and affiliates</p>
-                    <div class="fields">
-                        <div class="field"><span class="name">id</span> - <span class="type">String (Primary Key)</span></div>
-                        <div class="field"><span class="name">email</span> - <span class="type">String (Unique)</span></div>
-                        <div class="field"><span class="name">password</span> - <span class="type">String</span></div>
-                        <div class="field"><span class="name">name</span> - <span class="type">String</span></div>
-                        <div class="field"><span class="name">role</span> - <span class="type">UserRole (ADMIN, VENDOR, AFFILIATE)</span></div>
-                        <div class="field"><span class="name">referralCode</span> - <span class="type">String (Unique)</span></div>
-                        <div class="field"><span class="name">totalEarnings</span> - <span class="type">Float</span></div>
-                        <div class="field"><span class="name">availableBalance</span> - <span class="type">Float</span></div>
-                        <div class="field"><span class="name">profileImage</span> - <span class="type">String (Optional)</span></div>
-                        <div class="field"><span class="name">phoneNumber</span> - <span class="type">String (Optional)</span></div>
-                        <div class="field"><span class="name">bankDetails</span> - <span class="type">String (Optional)</span></div>
-                        <div class="field"><span class="name">isActive</span> - <span class="type">Boolean (Default: true)</span></div>
-                        <div class="field"><span class="name">isVerified</span> - <span class="type">Boolean (Default: false)</span></div>
-                        <div class="field"><span class="name">vendorStatus</span> - <span class="type">VendorStatus (PENDING, APPROVED, REJECTED, SUSPENDED)</span></div>
-                        <div class="field"><span class="name">createdAt</span> - <span class="type">DateTime</span></div>
-                        <div class="field"><span class="name">updatedAt</span> - <span class="type">DateTime</span></div>
-                    </div>
-                </div>
-                
-                <div class="model">
-                    <h3>Product Model</h3>
-                    <p class="description">Represents vendor products available in the platform</p>
-                    <div class="fields">
-                        <div class="field"><span class="name">id</span> - <span class="type">String (Primary Key)</span></div>
-                        <div class="field"><span class="name">vendorId</span> - <span class="type">String (Foreign Key)</span></div>
-                        <div class="field"><span class="name">title</span> - <span class="type">String</span></div>
-                        <div class="field"><span class="name">description</span> - <span class="type">Text</span></div>
-                        <div class="field"><span class="name">price</span> - <span class="type">Float</span></div>
-                        <div class="field"><span class="name">commissionPercentage</span> - <span class="type">Float (Default: 10%)</span></div>
-                        <div class="field"><span class="name">imageUrl</span> - <span class="type">String (Optional)</span></div>
-                        <div class="field"><span class="name">category</span> - <span class="type">String (Optional)</span></div>
-                        <div class="field"><span class="name">isActive</span> - <span class="type">Boolean (Default: true)</span></div>
-                        <div class="field"><span class="name">createdAt</span> - <span class="type">DateTime</span></div>
-                        <div class="field"><span class="name">updatedAt</span> - <span class="type">DateTime</span></div>
-                    </div>
-                </div>
-                
-                <div class="model">
-                    <h3>Transaction Model</h3>
-                    <p class="description">Tracks all purchases and commission calculations</p>
-                    <div class="fields">
-                        <div class="field"><span class="name">id</span> - <span class="type">String (Primary Key)</span></div>
-                        <div class="field"><span class="name">buyerId</span> - <span class="type">String (Foreign Key)</span></div>
-                        <div class="field"><span class="name">productId</span> - <span class="type">String (Foreign Key)</span></div>
-                        <div class="field"><span class="name">referrerId</span> - <span class="type">String (Optional, Foreign Key)</span></div>
-                        <div class="field"><span class="name">purchaseAmount</span> - <span class="type">Float</span></div>
-                        <div class="field"><span class="name">commissionAmount</span> - <span class="type">Float</span></div>
-                        <div class="field"><span class="name">status</span> - <span class="type">TransactionStatus</span></div>
-                        <div class="field"><span class="name">transactionType</span> - <span class="type">String (purchase, refund, manual_adjustment)</span></div>
-                        <div class="field"><span class="name">notes</span> - <span class="type">Text (Optional)</span></div>
-                        <div class="field"><span class="name">createdAt</span> - <span class="type">DateTime</span></div>
-                        <div class="field"><span class="name">updatedAt</span> - <span class="type">DateTime</span></div>
-                    </div>
-                </div>
-                
-                <div class="model">
-                    <h3>WithdrawalRequest Model</h3>
-                    <p class="description">Manages user withdrawal requests and approvals</p>
-                    <div class="fields">
-                        <div class="field"><span class="name">id</span> - <span class="type">String (Primary Key)</span></div>
-                        <div class="field"><span class="name">userId</span> - <span class="type">String (Foreign Key)</span></div>
-                        <div class="field"><span class="name">amount</span> - <span class="type">Float</span></div>
-                        <div class="field"><span class="name">status</span> - <span class="type">WithdrawalStatus</span></div>
-                        <div class="field"><span class="name">bankDetails</span> - <span class="type">Text (Optional)</span></div>
-                        <div class="field"><span class="name">approvedBy</span> - <span class="type">String (Optional)</span></div>
-                        <div class="field"><span class="name">approvalDate</span> - <span class="type">DateTime (Optional)</span></div>
+
+<h1>Welcome to Affiliate Platform</h1>
+<p>Earn by promoting digital products</p>
+
+<a href="login.html"><button>Login / Register</button></a> <a href="products.html"><button>View Products</button></a>
+
+</body>
+</html>
+ <span class="type">DateTime (Optional)</span></div>
                         <div class="field"><span class="name">rejectionReason</span> - <span class="type">String (Optional)</span></div>
                         <div class="field"><span class="name">createdAt</span> - <span class="type">DateTime</span></div>
                         <div class="field"><span class="name">updatedAt</span> - <span class="type">DateTime</span></div>
