@@ -1,0 +1,180 @@
+folder-name/file-name.txt
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for all system users
+model User {
+  id                    String      @id @default(cuid())
+  email                 String      @unique
+  password              String
+  name                  String
+  role                  UserRole    @default(AFFILIATE)
+  referralCode          String      @unique @default(cuid())
+  referredBy            String?
+  referrer              User?       @relation("ReferredUsers", fields: [referredBy], references: [id])
+  referredUsers         User[]      @relation("ReferredUsers")
+  
+  // Earnings & Balance
+  totalEarnings         Float       @default(0)
+  availableBalance      Float       @default(0)
+  
+  // Profile Info
+  profileImage          String?
+  phoneNumber           String?
+  bankDetails           String?
+  
+  // Status
+  isActive              Boolean     @default(true)
+  isVerified            Boolean     @default(false)
+  
+  // Vendor specific
+  vendorStatus          VendorStatus @default(PENDING)
+  vendorApprovedAt      DateTime?
+  vendorRejectionReason String?
+  
+  // Relations
+  products              Product[]
+  transactionsAsBuyer   Transaction[] @relation("BuyerTransactions")
+  transactionsAsReferrer Transaction[] @relation("ReferrerTransactions")
+  withdrawalRequests    WithdrawalRequest[]
+  
+  // Timestamps
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  
+  @@index([role])
+  @@index([vendorStatus])
+  @@index([isActive])
+}
+
+// Product model for vendor products
+model Product {
+  id                    String      @id @default(cuid())
+  vendorId              String
+  vendor                User        @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  
+  title                 String
+  description           String      @db.Text
+  price                 Float
+  commissionPercentage  Float       @default(10) // 10% default
+  
+  imageUrl              String?
+  category              String?
+  
+  isActive              Boolean     @default(true)
+  
+  // Relations
+  transactions          Transaction[]
+  
+  // Timestamps
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  
+  @@index([vendorId])
+  @@index([isActive])
+}
+
+// Transaction model for tracking all purchases and commissions
+model Transaction {
+  id                    String      @id @default(cuid())
+  buyerId               String
+  buyer                 User        @relation("BuyerTransactions", fields: [buyerId], references: [id], onDelete: Cascade)
+  
+  productId             String
+  product               Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  referrerId            String?
+  referrer              User?       @relation("ReferrerTransactions", fields: [referrerId], references: [id], onDelete: SetNull)
+  
+  purchaseAmount        Float
+  commissionAmount      Float
+  
+  status                TransactionStatus @default(COMPLETED)
+  
+  transactionType       String      @default("purchase") // purchase, refund, manual_adjustment
+  notes                 String?     @db.Text
+  
+  // Timestamps
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  
+  @@index([buyerId])
+  @@index([productId])
+  @@index([referrerId])
+  @@index([status])
+}
+
+// Withdrawal Request model
+model WithdrawalRequest {
+  id                    String      @id @default(cuid())
+  userId                String
+  user                  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  amount                Float
+  status                WithdrawalStatus @default(PENDING)
+  
+  bankDetails           String?     @db.Text
+  approvedBy            String?
+  approvalDate          DateTime?
+  rejectionReason       String?
+  
+  // Timestamps
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+}
+
+// Referral Tracking model
+model ReferralClick {
+  id                    String      @id @default(cuid())
+  referrerCode          String
+  productId             String
+  userId                String?      // Null if not logged in yet
+  ipAddress             String?
+  userAgent             String?
+  
+  createdAt             DateTime    @default(now())
+  
+  @@index([referrerCode])
+  @@index([productId])
+  @@index([userId])
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  VENDOR
+  AFFILIATE
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum WithdrawalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
